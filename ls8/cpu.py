@@ -2,18 +2,19 @@
 
 import sys
 
-ldi = 0b10000010
-prn = 0b01000111
-hlt = 0b00000001
-
 class CPU:
     """Main CPU class."""
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = [0] * 8
+        self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        
+    def ram_read(self, mar):
+        return self.ram[mar]
+    def ram_write(self, mar, mdr):
+        self.ram[mar] = mdr     
 
     def load(self):
         """Load a program into memory."""
@@ -35,6 +36,13 @@ class CPU:
         for instruction in program:
             self.ram[address] = instruction
             address += 1
+        # with open(sys.argv[1]) as f:
+        #     for line in f :
+        #         if line[0] != '#' and line != '/n':
+        #             self.ram[mar] = int(line[0:8], 2)
+        #             mar += 1
+        #     f.closed
+        # print(self.ram)            
 
 
     def alu(self, op, reg_a, reg_b):
@@ -65,13 +73,14 @@ class CPU:
             print(" %02X" % self.reg[i], end='')
 
         print()
-    def ram_read(self, mar):
-        return self.ram[mar]
-    def ram_write(self, mar, mdr):
-        self.ram[mar] = mdr    
+       
 
     def run(self):
         """Run the CPU."""
+        ldi = 0b10000010
+        prn = 0b01000111
+        hlt = 0b00000001
+        
         running = True
         ram = self.ram 
         reg =  self.reg 
@@ -82,9 +91,11 @@ class CPU:
             if command == ldi:
                 reg_num = self.ram_read(pc + 1)
                 value = self.ram_read(pc + 2)
+                self.ram_write(reg_num,value)
+                pc += 3
             elif command == prn:
                 reg_num = self.ram_read(pc + 1)
-                print(reg[reg_num])
+                print(ram[reg_num])
                 pc += 2
             elif command == hlt:
                 running = False 
