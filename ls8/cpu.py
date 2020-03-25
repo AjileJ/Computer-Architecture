@@ -124,36 +124,13 @@ class CPU:
         mlt = 0b10100010
         
         running = True
-        ram = self.ram 
-        reg =  self.reg 
-        pc = self.pc 
         
         while running:
             command = self.ram[self.pc]
             if command == hlt:
                 running = False
             self.branchtable[command]()    
-            # if command == ldi:
-                # reg_num = self.ram_read(pc + 1)
-                # value = self.ram_read(pc + 2)
-                # reg[reg_num] = value
-                # pc += 3
-            # elif command == prn:
-            #     reg_num = self.ram_read(pc + 1)
-            #     print('ram[reg_num]',reg[reg_num])
-            #     pc += 2
-            # elif command == hlt:
-            #     running = False 
-            #     pc += 1
-            # elif command == mlt:
-                # reg_num = self.ram_read(pc + 1)
-                # reg_num2 = self.ram_read(pc + 2)
-                # value = reg[reg_num] * reg[reg_num2]
-                # reg[reg_num] = value
-                # print('value',value)
-                # pc += 3    
-            # else:
-            #     print(f"Unknown instruction: {command}")
+            
                 
                      
             
