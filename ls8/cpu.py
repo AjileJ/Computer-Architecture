@@ -10,6 +10,8 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        self.sp = 7
+        self.reg[self.sp] = 0xf4
         self.branchtable = {}
         self.branchtable[0b10000010] = self.operand_ldi
         self.branchtable[0b01000111] = self.operand_prn
@@ -118,10 +120,12 @@ class CPU:
     def run(self):
         """Run the CPU."""
         #commands
-        ldi = 0b10000010
-        prn = 0b01000111
-        hlt = 0b00000001
-        mlt = 0b10100010
+        ldi  = 0b10000010
+        prn  = 0b01000111
+        hlt  = 0b00000001
+        mlt  = 0b10100010
+        push = 0b01000101
+        pop  = 0b01000110 
         
         running = True
         
@@ -129,7 +133,22 @@ class CPU:
             command = self.ram[self.pc]
             if command == hlt:
                 running = False
-            self.branchtable[command]()    
+            elif command == push:
+                self.reg[self.sp] -= 1  # decrement sp
+                reg_num = self.ram[self.pc + 1]
+                value = self.reg[reg_num]
+                self.ram[self.reg[self.sp]] = value #copy the reg value into the ram
+                self.pc += 2
+            elif command == pop:
+                value = self.ram[self.reg[self.sp]] 
+                reg_num = self.ram[self.pc + 1]
+                self.reg[reg_num] = value
+                
+                self.reg[self.sp] += 1 # increment the sp
+                
+                self.pc += 2
+            else:
+                self.branchtable[command]()    
             
                 
                      
