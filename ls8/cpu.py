@@ -126,12 +126,11 @@ class CPU:
         address = 0
         with open(sys.argv[1]) as f:
             for line in f:
-                # Ignore comments
                 comment_split = line.split("#")
                 num = comment_split[0].strip()
                 if num == "":
-                    continue  # Ignore blank lines
-                instruction = int(num, 2)  # Base 10, but ls-8 is base 2
+                    continue  
+                instruction = int(num, 2)  
                 self.ram[address] = instruction
                 address += 1
 
